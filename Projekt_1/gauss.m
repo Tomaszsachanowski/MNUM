@@ -1,8 +1,8 @@
-function [r] = gauss(M, b)
+function [r, time] = gauss(M, b)
 %b- wektor wynikow
 %M- macierz wspolczynikow
 %r- norma residuum
-
+    tic;
 %Sprawdzenie czy uklad rownan ma rozw. (Tw. CRAMERA)
     if (det(M) == 0)
         text = "Wyznacznik macierzy jest rowny zero(bliski) ";
@@ -78,4 +78,5 @@ function [r] = gauss(M, b)
     %obliczenie bledu rozw (% norma residuum)
     r = M*results_x - b;
     r = norm(r);
+    time =toc;
 end
