@@ -16,12 +16,12 @@ function [results_time] = wykres_residuum_time()
     end
     figure()
     plot(count_equations, results_time);
-    title('Zaleznosc czasu od ilosci rownan w ukladzie (typ C)')
+    title('Zaleznosc czasu od ilosci rownan w ukladzie (typ A)')
     xlabel('ilosc rownan') 
     ylabel('Czas')
     figure()
     plot(count_equations, results_r);
-    title('Zaleznosc normy residuum od ilosci rownan w ukladzie (typ C)')
+    title('Zaleznosc normy residuum od ilosci rownan w ukladzie (typ A)')
     xlabel('ilosc rownan') 
     ylabel('norma residuum')
 end
