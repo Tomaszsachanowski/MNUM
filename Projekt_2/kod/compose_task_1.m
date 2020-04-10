@@ -1,7 +1,7 @@
 function [itterations, successes, errors, srednie] = compose_task_1()
     sizes = [5 10 20];
     maxit = 1000;
-    up0 = 0.0001;
+    up0 = 0.0001;%%up0 = 0.00001; up0 = 0.000001;
     % wektory do przechowywania statystyk
     itterations = zeros(9, 1);
     successes = zeros(9, 1);
