@@ -1,47 +1,39 @@
-function [eigenvalues, it, goodit] = EigvalQRShift(A, up0, maxit)
-    %%up0-górna granica elementów zerowanych
-    %%maxit-maksymalna liczba iteracji
-    n=size(A,1); %%pobieramy rozmiar macierzy
-    %%alokacja pamiêci dla macierzy diagonalnej
-    %%przechowuj¹cej wartoœci w³asne macierzy A
-    eigenvalues=diag(zeros(n)); 
-    Ak = A; %%macierz pocz¹tkowa (oryginalna)
-    it=0; %%iterator
-    %%jesli zosta³ przekroczony maxit wówczas
-    %%uznajemy ¿e algorytm nie da³ rady
-    goodit=1; 
-    for k=n:-1:2
-        DK=Ak; %%DK - macierz startowa dla jednej wartoœci w³asnej
-        it=0;
-        while (it <= maxit && max(abs(DK(k,1:k-1))) > up0)
-        %%wykonuj a¿ do nastêpuj¹cych warunków - liczba
-        %%it przekroczy itmax lub
-            DD=DK(k-1:k,k-1:k); %%podmacierz dolnego prawego rogu
+function [ eigenvalues, iteracje,success] = EigvalQRShift( A, tol, imax )
+    %Oblicznie wartosci wlasnych metoda rozkladu QR z przesunieciami
+    % tol - tolerancja
+    % imax - maksymalna liczba iteracji
+    success = 1;
+    n=size(A,1);
+    eigenvalues = diag(zeros(n));
+    INITIALsubmatrix = A; %macierz pocz¹tkowa (oryginalna)
+    iteracje = 0;
+    for k = n:-1:2
+        DK = INITIALsubmatrix; %macierz startowa dla jednej wart. w³asnej
+        i = 0;
+        while i<= imax && max(abs(DK(k,1:k-1)))>tol
+            DD = DK(k-1:k,k-1:k); %macierz 2x2 prawego dolnego rogu 
             e=[1,-(DD(1,1)+DD(2,2)),DD(2,2)*DD(1,1)-DD(1,2)*DD(2,1)];
             r=roots(e); %%obliczamy pierwiastki wielomianu e
-            %%wartoœæ w³asna podmacierzy DD
-            if abs(r(1,1)-DD(2,2)) < abs(r(2,1)-DD(2,2)) 
-                shift=r(1,1);
+            if abs(r(1,1)-DD(2,2)) < abs(r(2,1)-DD(2,2)) %%wartoœæ w³asna
+                shift = r(1,1);
             else
-                shift=r(2,1);
+                shift = r(2,1);
             end
-            DK=DK-eye(k)*shift; %%macierz przesuniêta
-            [Q,R]=Decompose_QR(DK); %%faktoryzacja QR
-            DK=R*Q+eye(k)*shift; %%dodajemy przesuniêcia
-            it=it+1; %%zwiêkszamy iterator
+            DK = DK - eye(k)*shift; %macierz przesuniêta
+            [Q1,R1] = Decompose_QR(DK); %faktoryzajca QR
+            DK = R1 *Q1 +eye(k)*shift; %macierz przekszta³cona
+            i = i+1;
+            iteracje = iteracje + 1;
         end
-        if it > maxit
-            %%jeœli nie uda³o siê osi¹gn¹æ wyniku w mniej ni¿ itmax
-            %%iteracji wtedy oznacza, ¿e siê nie uda³o obliczyæ
-            %%wartoœci w³asnej z dan¹ dok³adnoœci¹
-            goodit = 0; 
+        if i >imax
+            success = 0;
+            disp('imax exceeded program terminated')
         end
-        %%zapisujemy jako wartoœæ w³asna element z rogu macierzy
-        eigenvalues(k)=DK(k,k);
+        eigenvalues(k) = DK(k,k);
         if k>2
-            Ak=DK(1:k-1,1:k-1); %%macierz - deflacja
+            INITIALsubmatrix = DK(1:k-1,1:k-1); %deflacja macierzy
         else
-            eigenvalues(1)=DK(1,1); %%je¿eli to ostatnia macierz w³asna
+            eigenvalues(1) = DK(1,1); %ostatnia wartoœæ w³asna
         end
     end
 end
