@@ -5,6 +5,10 @@ function [c, iter] = bisection(a, b, eps)
     tmp_a = a;
     tmp_b= b;
     while(abs(value_c) > eps) % koniec gdy osiagniemy dobra dokladnosc
+        %sprawdzamy obszar izolacji
+        if(value_a*value_b>0)
+            error('Brak obszaru izolacji');
+        end
         value_a = func(tmp_a); % wartosci na koncach przedzialu
         value_b = func(tmp_b);
         c = (tmp_a + tmp_b)/2; % nowy srodek przedzialu
