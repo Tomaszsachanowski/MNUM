@@ -4,10 +4,13 @@ function [results] = compose_task_1()
     eps = 0.001;
     iter_max = 100;
     X = 2:0.1:11; % Nasza dziedzina
-    Y = arrayfun(@(x) func(x),X);
+    Y = arrayfun(@(x) func(x),X); %Wartosc funkcji w dziedzinie
     figure;
+    % rysuje wykres funkcji
     plot(X,Y);
+    % os OX
     line([2,11],[0,0],'Color','b')
+    % dla 10 coraz to mniejszych eps
     for i=1:10
         [x0, iter] = bisection(3, 7, eps, iter_max);
         results(1, i) = eps;
@@ -22,7 +25,7 @@ function [results] = compose_task_1()
         [x0, iter] = secant(7, 7.5, eps, iter_max);
         results(8, i) = x0;
         results(9, i) = iter;
-        eps = eps/10;
+        eps = eps/10; % zminejszam eps
     end
 end
 
