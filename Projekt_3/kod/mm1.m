@@ -1,5 +1,6 @@
-function [ x3, iter, iter_results] = mm1( x0, x1, x2, iter_max)
-    iter = 0;
+function [iter_results] = mm1( x0, x1, x2, iter_max)
+    iter = 0; % ilosc iteracji
+    % zapiansie naszych wynikow w danej iteracji
     iter_results = zeros(iter_max, 2);
     %while abs(y) > eps && iter <= iter_max
     for i = 1:iter_max
@@ -9,10 +10,10 @@ function [ x3, iter, iter_results] = mm1( x0, x1, x2, iter_max)
         [c, ~]= wielomian(x2);
         %tworzymy uk³ad równañ do obliczenia a,b i rozwi¹zujemy go
         A = [z0^2 , z0; z1^2, z1];
-        [f2_x0, ~] = wielomian(x0);
-        [f2_x1, ~] = wielomian(x1);
-        B = [f2_x0 - c; f2_x1 - c];
-        [w] = linsolve(A,B);
+        [f_x0, ~] = wielomian(x0);
+        [f_x1, ~] = wielomian(x1);
+        B = [f_x0 - c; f_x1 - c];
+        [w] = linsolve(A, B);
         a = w(1);
         b = w(2);
         %wybieramy zmin jako ten o najmniejszym module
@@ -23,9 +24,10 @@ function [ x3, iter, iter_results] = mm1( x0, x1, x2, iter_max)
         end
         %obliczamy kolejne przybli¿enie miejsca zerowego
         x3 = x2 + zmin;
-        x(i) = x3;
-        y(i) = f2(x3);
-        % polozenei punktow
+        % zapisujemy wyniki
+        iter_results(i, 1) = x3;
+        [iter_results(i, 2), ~] = wielomian(x3);
+        % polozenie punktow
         d0 = abs(x3-x0);
         d1 = abs(x3-x1);
         d2 = abs(x3-x2);
@@ -43,7 +45,6 @@ function [ x3, iter, iter_results] = mm1( x0, x1, x2, iter_max)
         end
         %Przygotowujemy siê do kolejnej iteracji
         x2 = x3;
+        iter =iter + 1;
     end
-x=x';
-y=y';
 end
